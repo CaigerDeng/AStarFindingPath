@@ -9,14 +9,12 @@ public class Cell : MonoBehaviour, IPointerDownHandler
     private Map map;
     private Image img;
 
-    // Use this for initialization
     void Start()
     {
         map = transform.parent.GetComponent<Map>();
         img = transform.GetComponent<Image>();
     }
 
-    // Update is called once per frame
     void Update()
     {
 

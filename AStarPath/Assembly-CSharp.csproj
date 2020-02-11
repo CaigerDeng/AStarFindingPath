@@ -51,8 +51,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-     <Compile Include="Assets\AStar\Cell.cs" />
-     <Compile Include="Assets\AStar\Map.cs" />
+     <Compile Include="Assets\Script\Cell.cs" />
+     <Compile Include="Assets\Script\Map.cs" />
  <Reference Include="UnityEngine.UI">
  <HintPath>C:/UnityX/2017/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>
  </Reference>

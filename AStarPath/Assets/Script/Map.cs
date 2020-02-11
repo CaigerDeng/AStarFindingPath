@@ -8,17 +8,18 @@ public class Map : MonoBehaviour
 {
     private Image startImg;
     private Image endImg;
-    private int width, height;
-    private Node[,] grid; //地形
+    private int width = 32;
+    private int height = 18;
+    private Node[,] grid;
 
     void Start()
     {
-        InitGrid(); 
+        InitGrid();
     }
 
     void Update()
     {
-        MyFindingPath();
+        FindingPath();
     }
 
     public void SetStartImage(Image img)
@@ -43,16 +44,14 @@ public class Map : MonoBehaviour
 
     private void InitGrid()
     {
-        width = 32;
-        height = 18;
         grid = new Node[width, height];
         for (int i = 0; i < width; i++)
         {
             for (int j = 0; j < height; j++)
             {
-                //控件已经设置成从左小角开始数
-                int num = j * width + i;
-                Transform tra = transform.GetChild(num);
+                // GridLayoutGroup has been set to count from the bottom left corner 
+                int index = j * width + i;
+                Transform tra = transform.GetChild(index);
                 bool isWall = (tra.tag == "Wall");
                 Image img = tra.GetComponent<Image>();
                 grid[i, j] = new Node(isWall, i, j, img, this);
@@ -81,7 +80,7 @@ public class Map : MonoBehaviour
         }
     }
 
-    // 取得周围的节点 曼哈顿估价
+    // get neibourhood node used Manhattan valuation
     private List<Node> GetNeibourhoodByMan(Node node)
     {
         List<Node> list = new List<Node>();
@@ -89,30 +88,41 @@ public class Map : MonoBehaviour
         {
             for (int j = -1; j <= 1; j++)
             {
-                // 如果是自己，则跳过
+                // skip myself
                 if (i == 0 && j == 0)
+                {
                     continue;
-                //跳过四角
+                }
+                // skip the four corners
                 if (i == 1 && j == 1)
+                {
                     continue;
+                }
                 if (i == -1 && j == -1)
+                {
                     continue;
+                }
                 if (i == 1 && j == -1)
+                {
                     continue;
+                }
                 if (i == -1 && j == 1)
+                {
                     continue;
+                }
                 int x = node.oriX + i;
                 int y = node.oriY + j;
-                // 判断是否越界，如果没有，加到列表中
+                // determine if it is out of bounds, if not, add it to the list
                 if (x < width && x >= 0 && y < height && y >= 0)
+                {
                     list.Add(grid[x, y]);
+                }
             }
         }
         return list;
     }
 
-    //获取两个节点之间的距离
-    //曼哈顿估价法
+    // get the distance between two nodes used Manhattan valuation
     private int GetDistanceNodesByMan(Node a, Node b)
     {
         int cntX = Mathf.Abs(a.oriX - b.oriX);
@@ -139,11 +149,11 @@ public class Map : MonoBehaviour
         public int oriX = 0;
         public int oriY = 0;
         public Image img;
-        //与起点的长度
+        // length from the starting point
         public int gCost;
-        //与终点的长度
+        // length from the ending point
         public int hCost;
-        // 总的路径长度
+        // total path length
         public int fCost
         {
             get
@@ -151,7 +161,6 @@ public class Map : MonoBehaviour
                 return gCost + hCost;
             }
         }
-        //父节点
         public Node parent;
 
         public Node(bool isWall, int x, int y, Image img, Map map)
@@ -165,19 +174,25 @@ public class Map : MonoBehaviour
 
         public void ShowPath()
         {
-            if (isWall || img == map.startImg || img == map.endImg) return;
+            if (isWall || img == map.startImg || img == map.endImg)
+            {
+                return;
+            }
             img.color = Color.yellow;
         }
 
         public void HidePath()
         {
-            if (isWall || img == map.startImg || img == map.endImg) return;
+            if (isWall || img == map.startImg || img == map.endImg)
+            {
+                return;
+            }
             img.color = Color.white;
         }
 
     }
 
-    void MyFindingPath()
+    void FindingPath()
     {
         if (startImg == null || endImg == null)
         {
@@ -194,7 +209,7 @@ public class Map : MonoBehaviour
             Node curNode = openList[0];
             for (int i = 0; i < openList.Count; i++)
             {
-                //总路径要尽可能小，离目标点尽可能近
+                // the total path should be as small as possible and as close as possible to the target
                 if (openList[i].fCost <= curNode.fCost && openList[i].hCost <= curNode.hCost)
                 {
                     curNode = openList[i];
@@ -215,7 +230,7 @@ public class Map : MonoBehaviour
                 }
                 if (!openList.Contains(item))
                 {
-                    //更新数值
+                    // update length
                     item.gCost = GetDistanceNodesByMan(item, startNode);
                     item.hCost = GetDistanceNodesByMan(item, endNode);
                     item.parent = curNode;
