@@ -8,8 +8,8 @@ public class Map : MonoBehaviour
 {
     private Image startImg;
     private Image endImg;
-    private int width = 32;
-    private int height = 18;
+    private const int WIDTH = 32;
+    private const int HEIGHT = 18;
     private Node[,] grid;
 
     void Start()
@@ -44,13 +44,13 @@ public class Map : MonoBehaviour
 
     private void InitGrid()
     {
-        grid = new Node[width, height];
-        for (int i = 0; i < width; i++)
+        grid = new Node[WIDTH, HEIGHT];
+        for (int i = 0; i < WIDTH; i++)
         {
-            for (int j = 0; j < height; j++)
+            for (int j = 0; j < HEIGHT; j++)
             {
                 // GridLayoutGroup has been set to count from the bottom left corner 
-                int index = j * width + i;
+                int index = j * WIDTH + i;
                 Transform tra = transform.GetChild(index);
                 bool isWall = (tra.tag == "Wall");
                 Image img = tra.GetComponent<Image>();
@@ -113,7 +113,7 @@ public class Map : MonoBehaviour
                 int x = node.oriX + i;
                 int y = node.oriY + j;
                 // determine if it is out of bounds, if not, add it to the list
-                if (x < width && x >= 0 && y < height && y >= 0)
+                if (x < WIDTH && x >= 0 && y < HEIGHT && y >= 0)
                 {
                     list.Add(grid[x, y]);
                 }
